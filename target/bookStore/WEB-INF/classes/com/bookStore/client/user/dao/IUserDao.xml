@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bookStore.client.user.dao.IUserDao">
+    <insert id="insertUser">
+        insert into user (username,password,gender,email,telephone,introduce,activeCode)
+        values(#{username},#{password},#{gender},#{email},#{telephone},#{introduce},#{activeCode})
+    </insert>
+
+    <update id="activeUser">
+        update user set state=1 where activeCode=#{activeCode}
+    </update>
+
+    <select id="selectEmail" resultType="User">
+        select * from user where email=#{email}
+    </select>
+
+    <select id="selectUsername" resultType="User">
+        select * from user where username=#{username}
+    </select>
+
+    <select id="selectUserByLogin" resultType="User">
+        select * from user where username=#{username} and password=#{password}
+    </select>
+
+    <update id="updateUser">
+        update user set password=#{password},gender=#{gender},telephone=#{telephone}
+        where id = #{id}
+    </update>
+
+    <select id="selectUserById" resultType="User">
+        select * from user where id = #{user_id}
+    </select>
+
+    <resultMap id="orderMap" type="Order">
+        <id property="id" column="id"/>
+        <association property="user"
+                     javaType="User"
+                     select="selectUserById"
+                     column="user_id"/>
+    </resultMap>
+
+    <select id="selectOrderByUser" resultMap="orderMap">
+        select * from orders where user_id = #{id}
+    </select>
+
+    <select id="selectProductById" resultType="Product">
+        select * from products where id = #{product_id}
+    </select>
+
+    <select id="selectOrderById" resultMap="orderMap">
+        select * from orders where id = #{order_id}
+    </select>
+
+    <resultMap id="itemMap" type="Orderitem">
+    <association property="order"
+                 javaType="Order"
+                 select="selectOrderById"
+                 column="order_id"/>
+    <association property="product"
+                 javaType="Product"
+                 select="selectProductById"
+                 column="product_id"/>
+    </resultMap>
+
+    <select id="selectOrderitemById" resultMap="itemMap">
+        select * from orderitem where order_id = #{id}
+    </select>
+
+    <update id="updateProductnum">
+        update products set pnum = pnum + #{buynum} where id = #{product.id}
+    </update>
+
+    <delete id="deleteOrderById">
+        delete from orders where id = #{id}
+    </delete>
+
+    <delete id="deleteOrderItemById">
+        delete from orderitem where order_id = #{id}
+    </delete>
+
+</mapper>

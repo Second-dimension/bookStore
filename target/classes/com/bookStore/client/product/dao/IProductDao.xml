@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bookStore.client.product.dao.IProductDao">
+
+    <select id="selectProductByCategory" resultType="Product">
+        select * from products
+        <where>
+            <if test="category != null and category !=''">
+                category = #{category}
+            </if>
+        </where>
+        limit #{pageModel.firstLimitParam},#{pageModel.pageSize}
+    </select>
+
+    <select id="selectProductByCategoryCount" resultType="int">
+        select count(*) from products
+        <where>
+            <if test="category != null and category != ''">
+                category = #{category}
+            </if>
+        </where>
+    </select>
+
+    <select id="selectProductByName" resultType="Product">
+        select * from products
+        <where>
+            <if test="name != null and name != '' and name != '请输入书名'">
+                name like '%' #{name} '%'
+            </if>
+        </where>
+        limit #{pageModel.firstLimitParam},#{pageModel.pageSize}
+    </select>
+
+    <select id="selectProductByNameCount" resultType="int">
+        select count(*) from products
+        <where>
+            <if test="name != null and name != '' and name != '请输入书名'">
+                name like '%' #{name} '%'
+            </if>
+        </where>
+    </select>
+
+    <select id="selectProductById" resultType="Product">
+        select * from products where id = #{id}
+    </select>
+
+    <select id="selectRecentNotice" resultType="Notice">
+        select * FROM notice  order by n_time desc limit 0,1
+    </select>
+
+    <select id="selectWeekHotProduct" resultType="Product">
+        select products.id,products.name,products.imgurl,products.price,SUM(orderitem.buynum) totalsalnum
+        from products,orders,orderitem
+        where orders.paystate=1
+        and orders.ordertime > DATE_SUB(NOW(),INTERVAL 7 DAY)
+        and orderitem.order_id = orders.id
+        and products.id = orderitem.product_id
+        group by products.id
+        order by totalsalnum desc
+        limit 0,2
+    </select>
+
+</mapper>
