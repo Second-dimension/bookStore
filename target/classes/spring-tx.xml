@@ -14,7 +14,7 @@
     <!--事务通知-->
     <tx:advice id="txAdvice" transaction-manager="transactionManager">
         <tx:attributes>
-            <tx:method name="find*" isolation="DEFAULT" propagation="REQUIRED"/>
+            <tx:method name="find*" isolation="DEFAULT" propagation="REQUIRED" />
             <tx:method name="add*" isolation="DEFAULT" propagation="REQUIRED"/>
             <tx:method name="modify*" isolation="DEFAULT" propagation="REQUIRED"/>
             <tx:method name="remove*" isolation="DEFAULT" propagation="REQUIRED" rollback-for="Exception"/>
